@@ -1,4 +1,4 @@
-function GEt-EnterpriseRoot {
+function Get-EnterpriseRoot {
     <#
     .SYNOPSIS
     Returns the root directory of the Enterprise AD Framework repository.
@@ -19,6 +19,6 @@ function GEt-EnterpriseRoot {
     $moduleRoot = Resolve-ModuleRoot
 
     return (Resolve-Path (
-        Join-Path $moduleRoot '..\..\..'
-    )).Path
+            Join-Path $moduleRoot '..\..\..'
+        )).Path
 }
