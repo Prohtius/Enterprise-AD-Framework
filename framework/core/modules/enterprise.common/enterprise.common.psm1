@@ -1,7 +1,28 @@
-Set-StrictMode -Version Latest
+$ModuleRoot = Split-Path -Parent $PSCommonPath
 
-$ModuleRoot = $PSScriptRoot
+# Import bootstrap helpers
+. "$ModuleRoot\private\Import-ModuleFolder.ps1"
+. "$ModuleRoot\private\Import-ModuleClasses.ps1"
 
+# Import private functions
+Import-ModuleFolder -Path (Join-Path $ModuleRoot 'private')
+
+# Import Classes
+Import-ModuleClasses -Path (Join-Path $moduleRoot 'classes')
+
+# Import Public functions
+Import-ModuleFolder -Path (Join-Path $ModuleRoot 'public')
+
+# Export public functions
+$PublicFunctions = Get-ChildItem `
+    -Path (Jion-Path $moduleRoot 'public') `
+    -Filter '*.ps1' `
+    -File |
+Select-Object -ExpandProperty BaseName
+
+Export-ModuleMember -Function $PublicFunctions
+
+<#
 # Load private function first
 $privateFolder = Join-Path $ModuleRoot 'Private'
 
@@ -29,3 +50,4 @@ Export-ModuleMember -Function (
     Get-ChildItem $publicFolder -Filter '*.ps1' | 
     Select-Object -ExpandProperty BaseName
 )
+#>
