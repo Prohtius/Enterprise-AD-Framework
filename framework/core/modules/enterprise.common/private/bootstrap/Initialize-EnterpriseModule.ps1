@@ -1,29 +1,58 @@
+<#
+.SYNOPSIS
+    Initializes the Enterprise module bootstrap process.
+
+.DESCRIPTION
+    Resolves framework paths, creates the bootstrap context,
+    imports module components, and returns the list of
+    exported public functions.
+#>
+
 function Initialize-EnterpriseModule {
     [CmdletBinding()]
-    param(
-        [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
-        [string]$ModuleRoot
-    )
+    [OutputType([string[]])]
+    param()
 
-    begin {
+    #
+    # Resolve framework paths
+    #
+
+    $ModuleRoot = Resolve-EnterpriseModuleRoot
+    $RepositoryRoot = Resolve-EnterpriseRepositoryRoot -Path $ModuleRoot
+
+    #
+    # Build bootstrap context
+    #
+
+    $Context = [EnterpriseBootstrapContext]::new()
+
+    $Context.ModuleRoot = $ModuleRoot
+    $Context.RepositoryRoot = $RepositoryRoot
+    $Context.ModuleName = Split-Path -Leaf $ModuleRoot
+
+    $script:EnterpriseBootstrapContext = $Context
+
+    #
+    # Import module components
+    #
+
+    $ClassesPath = Join-Path $ModuleRoot 'Classes'
+    $PublicPath = Join-Path $ModuleRoot 'Public'
+
+    if (-not (Test-Path -Path $ClassesPath -PathType Container)) {
+        throw "Classes folder not found: $ClassesPath"
     }
 
-    process {
-
-        Import-ModuleFolder -Path (Join-Path $ModuleRoot 'private')
-
-        Import-ModuleClasses -Path (Join-Path $ModuleRoot 'classes')
-
-        Import-ModuleFolder -Path (Join-Path $ModuleRoot 'utilities')
-
-        Import-ModuleFolder -Path (Join-Path $ModuleRoot 'public')        
-
-        return Get-EnterprisePublicFunctionList `
-            -PublicFolder (Join-Path $ModuleRoot 'public')
-
+    if (-not (Test-Path -Path $PublicPath -PathType Container)) {
+        throw "Public folder not found: $PublicPath"
     }
 
-    end {
-    }
+    Import-ModuleClasses -Path $ClassesPath
+    Import-ModuleFolder -Path $PublicPath
+
+    #
+    # Discover exported functions
+    #
+
+    Get-EnterprisePublicFunctionList -Path $PublicPath
 }

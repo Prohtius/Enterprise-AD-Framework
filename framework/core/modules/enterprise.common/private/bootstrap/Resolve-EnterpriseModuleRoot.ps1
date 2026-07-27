@@ -1,8 +1,10 @@
-function Resolve-ModuleRoot {
+function Resolve-EnterpriseModuleRoot {
     [CmdletBinding()]
+    [OutputType([string])]
     param()
 
-    Set-StrictMode -Version Latest
+    $BootstrapRoot = Split-Path -Parent $PSScriptRoot
+    $ModuleRoot = Split-Path -Parent $BootstrapRoot
 
-    return $PSScriptRoot | Split-Path -Parent
+    $ModuleRoot
 }
