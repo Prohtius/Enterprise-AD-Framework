@@ -1,19 +1,20 @@
-$ModuleRoot = Split-Path -Parent $PSCommonPath
+<#
+    Enterprise.Common
+    Module entry point.
+
+    Responsibilities:
+      - Determine the module root.
+      - Load the bootstrap subsystem.
+      - Initialize the module.
+      - Export public functions.
+#>
+
+# Resolve module root
+$ModuleRoot = Split-Path -Parent $PSCommandPath
 
 # Import bootstrap helpers
-. "$ModuleRoot\private\Import-ModuleFolder.ps1"
-. "$ModuleRoot\private\Import-ModuleClasses.ps1"
+. "$ModuleRoot\Private\Bootstrap\Import-Bootstrap.ps1"
 
-# Import private functions
-Import-ModuleFolder -Path (Join-Path $ModuleRoot 'private')
-
-# Import Classes
-Import-ModuleClasses -Path (Join-Path $moduleRoot 'classes')
-
-# Import Public functions
-Import-ModuleFolder -Path (Join-Path $ModuleRoot 'public')
-
-# Export public functions
-$PublicFunctions = Get-EnterprisePublicFunctionList -PublicFolder (Join-Path $moduleRoot 'public')    
+$PublicFunctions = Initialize-EnterpriseModule
 
 Export-ModuleMember -Function $PublicFunctions
