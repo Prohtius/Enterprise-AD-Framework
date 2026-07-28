@@ -1,3 +1,12 @@
+<#
+.SYNOPSIS
+    Returns the list of public functions exported by a module.
+
+.DESCRIPTION
+    Enumerates PowerShell scripts in the Public folder and derives
+    exported function names from the filenames.
+#>
+
 function Get-EnterprisePublicFunctionList {
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -7,41 +16,26 @@ function Get-EnterprisePublicFunctionList {
         [string]$PublicFolder
     )
 
-    begin {
+    if (-not (Test-Path -Path $PublicFolder -PathType Container)) {
+        throw "Public folder not found: $PublicFolder"
     }
 
-    process {
+    $FunctionNames = Get-ChildItem `
+        -Path $PublicFolder `
+        -Filter '*.ps1' `
+        -File |
+    Sort-Object Name |
+    Select-Object -ExpandProperty BaseName
 
-        if (-not (Test-Path -Path $PublicFolder)) {
-            throw "Public folder not found: $PublicFolder"
-        }
+    $Duplicates = $FunctionNames |
+    Group-Object |
+    Where-Object Count -gt 1
 
-        $FunctionNames = Get-ChildItem `
-            -Path $PublicFolder `
-            -Filter '*.ps1' `
-            -File |
-        Sort-Object Name |
-        Select-Object -ExpandProperty BaseName
+    if ($Duplicates) {
+        $Names = $Duplicates.Name -join ', '
 
-        if (-not $FunctionNames) {
-            throw "No public functions were found in '$PublicFolder'."
-        }
-
-        $Duplicates = $FunctionNames |
-        Group-Object |
-        Where-Object Count -gt 1
-
-        if ($Duplicates) {
-
-            $Names = $Duplicates.Name -join ', '
-
-            throw "Duplicate public function names detected: $Names"
-        }
-
-        return $FunctionNames
-
+        throw "Duplicate public function names detected: $Names"
     }
 
-    end {
-    }
+    return @($FunctionNames)
 }

@@ -1,20 +1,52 @@
+<#
+.SYNOPSIS
+    Represents the bootstrap state for an Enterprise module.
+
+.DESCRIPTION
+    Stores module metadata, framework paths, and execution environment
+    information established during module initialization.
+#>
+
 class EnterpriseBootstrapContext {
 
-    [string]$ModuleName
-    [string]$ModuleRoot
-    [string]$RepositoryRoot
-    [string]$RuntimePath
-    [string]$BuildPath
-    [string]$DocsPath
-    [version]$ModuleVersion
-    [version]$FrameworkVersion
-    [Version]$PowerShellVersion
-    [string]$PowerShellEdition
-    [bool]$IsAdministrator
-    [bool]$IsCI    
+    #
+    # Module Information
+    #
+
+    [string]  $ModuleName
+    [version] $ModuleVersion
+
+    #
+    # Framework Paths
+    #
+
+    [string] $ModuleRoot
+    [string] $RepositoryRoot
+    [string] $RepositoryName
+    [string] $RuntimePath
+    [string] $BuildPath
+    [string] $DocsPath
+
+    #
+    # Framework Information
+    #
+
+    [version] $FrameworkVersion
+
+    #
+    # PowerShell Environment
+    #
+
+    [version] $PowerShellVersion
+    [string]  $PowerShellEdition
+
+    #
+    # Execution Environment
+    #
+
+    [bool] $IsAdministrator
+    [bool] $IsCI
 
     EnterpriseBootstrapContext() {
-
     }
-
 }
