@@ -36,23 +36,21 @@ function Initialize-EnterpriseModule {
     # Import module components
     #
 
-    $ClassesPath = Join-Path $ModuleRoot 'Classes'
-    $PublicPath = Join-Path $ModuleRoot 'Public'
+    #
+    # Import public functions
+    #
 
-    if (-not (Test-Path -Path $ClassesPath -PathType Container)) {
-        throw "Classes folder not found: $ClassesPath"
-    }
+    $PublicPath = Join-Path $ModuleRoot 'Public'
 
     if (-not (Test-Path -Path $PublicPath -PathType Container)) {
         throw "Public folder not found: $PublicPath"
     }
 
-    Import-ModuleClasses -Path $ClassesPath
     Import-ModuleFolder -Path $PublicPath
 
     #
     # Discover exported functions
     #
 
-    Get-EnterprisePublicFunctionList -Path $PublicPath
+    Get-EnterprisePublicFunctionList -PublicFolder $PublicPath
 }

@@ -1,0 +1,21 @@
+<#
+    Enterprise.Common
+    Module Entry Point
+
+    NOTE:
+    This file is a build template.
+    Do not place PowerShell class definitions here.
+    They are injected automatically during the build process.
+#>
+
+# Resolve module root
+$ModuleRoot = Split-Path -Parent $PSCommandPath
+
+# Import bootstrap helpers
+. "$ModuleRoot\Private\Bootstrap\Import-Bootstrap.ps1"
+
+# Initialize module
+$PublicFunctions = Initialize-EnterpriseModule
+
+# Export public functions
+Export-ModuleMember -Function $PublicFunctions

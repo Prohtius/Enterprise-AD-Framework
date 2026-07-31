@@ -4,6 +4,8 @@
 
 ## Project Goals
 
+Build a data-driven automation engine that can provision any enterprise environment from configuration.
+
 ## Features
 
 ## Repository Structure

@@ -23,6 +23,9 @@ function Import-ModuleClasses {
     $Files = Get-ChildItem -Path $Path -Filter '*.ps1' -File |
     Sort-Object Name
 
+    Write-Host "Importing classes from: $Path"
+    $Files | ForEach-Object { Write-Host "  $($_.FullName)" }
+
     foreach ($File in $Files) {
         try {
             . $File.FullName
